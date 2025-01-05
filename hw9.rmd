@@ -1,0 +1,72 @@
+
+```{r}
+#least squares
+input=c(1, 1, 1, 1, 1, 
+        -2, -1, 0, 1, 2, 
+        exp(2), exp(1), exp(0), exp(-1), exp(-2))
+A <- matrix(input, nrow = 5, ncol = 3)
+b <- matrix(c(-7.1474, -3.3021, 1.2274, 6.1006, 11.0370), ncol=1)
+t(A) %*%A
+solve(t(A) %*%A) %*% t(A) %*% b
+```
+
+
+
+```{r}
+#Markowitz Portfolio
+PortSelectData <- read.csv("PortSelectData.csv")
+
+mu_1 <- mean(PortSelectData[, 2], na.rm=T)
+mu_2 <- mean(PortSelectData[, 3], na.rm=T)
+mu_3 <- mean(PortSelectData[, 4], na.rm=T)
+mu_4 <- mean(PortSelectData[, 5], na.rm=T)
+mu_5 <- mean(PortSelectData[, 6], na.rm=T)
+
+paste("E[R_1]: ", mu_1)
+paste("E[R_2]: ", mu_2)
+paste("E[R_3]: ", mu_3)
+paste("E[R_4]: ", mu_4)
+paste("E[R_5]: ", mu_5)
+```
+
+
+```{r}
+#covariance matrix
+clean_port <- PortSelectData[-c(21, 22), -c(1, 7, 8, 9)]
+R_j <- c(mu_1, mu_2, mu_3, mu_4, mu_5)
+
+
+for (i in 1:ncol(clean_port)){
+  clean_port[, i]=clean_port[, i]-R_j[i]
+}
+
+X <- as.matrix(clean_port)
+
+#covariance matrix for python file
+S <- 1/(nrow(clean_port)-1) * t(X) %*% X
+
+colnames(S) <- NULL
+rownames(S) <- NULL
+
+S
+```
+
+
+
+```{r}
+#gradient descent prototype
+x1=2
+x2=0
+grad_descHW10 = function(x1, x2){
+  for (i in 1:5){
+    x1 = x1 - 10^(-6)*(x1+x2-3)
+    x2= x2 - 10^(-6)*(10^(-6)*x2+x1-4)
+    print(paste(i, " x1: ", x1, " x2: ", x2))
+  }
+}
+
+grad_descHW10(x1, x2)
+```
+
+
+
